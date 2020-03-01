@@ -1,12 +1,15 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
+#Data loading and preparation
 
 melbourne_file_path = '../input/melbourne-housing-snapshot/melb_data.csv'
 melbourne_data = pd.read_csv(melbourne_file_path) 
-melbourne_data.columns
+feature_data = melbourne_data = melbourne_data.dropna(axis=0)
+y = melbourne_data
+X = melbourne_features = ['Rooms', 'Bathroom', 'Landsize', 'Lattitude', 'Longtitude']
 train_X, val_X, train_y, val_y = train_test_split(X, y, random_state = 0)
 # Define model
-melbourne_model = DecisionTreeRegressor()
+melbourne_model = DecisionTreeRegressor(random_state=1)
 # Fit model
 melbourne_model.fit(train_X, train_y)
 
