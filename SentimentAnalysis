@@ -1,8 +1,13 @@
 import spacy 
 import pandas as pd
 from spacy.matcher import PhraseMatcher
-nlp = spacy.blank('en')
-data = pd.read_json('/restaurant.json')
+from collections import defaultdict
+"""
+Sentiment analysis using the restaurant json file
+
+"""
+nlp = spacy.blank('en')# instruction for loading the english language model
+data = pd.read_json('/restaurant.json')#loading the data set 
 menu = ["Cheese Steak", "Cheesesteak", "Steak and Cheese", "Italian Combo", "Tiramisu", "Cannoli",
         "Chicken Salad", "Chicken Spinach Salad", "Meatball", "Pizza", "Pizzas", "Spaghetti",
         "Bruchetta", "Eggplant", "Italian Beef", "Purista", "Pasta", "Calzones",  "Calzone",
@@ -13,6 +18,23 @@ menu = ["Cheese Steak", "Cheesesteak", "Steak and Cheese", "Italian Combo", "Tir
         "Grilled Veggie", "Grilled Veggies", "Grilled Vegetable", "Mac and Cheese", "Macaroni",  
          "Prosciutto", "Salami"]
 terms = [nlp(item) for item in menu]
-matcher = PhraseMatcher(nlp.vocab, attr='LOWER')
+matcher = PhraseMatcher(nlp.vocab, attr='LOWER') #phrase matcher definiion
 matcher.add("Menu",None, *terms)
-item_ratings =
+item_ratings = defaultdict(list)
+for idx,review in data.iterrows():
+  doc = nlp(review.text)
+  matches = matcher(doc)
+  found_items = set(doc[match[1]:match[2] ]for match in matches)
+
+  for item in found_items:
+
+     item_ratings[str(item).lower()].append(review.stars)
+
+
+average_ratings = {item:sum(ratings)/len(ratings) for item, ratings in item_ratings.items()}  
+print(average_ratings) 
+counts={item:len(ratings) for item,ratings in item_ratings.items()}
+print(counts)
+print('the least rated menu item is')
+sorted_count = sorted(counts, key=counts.get)
+print(counts)
