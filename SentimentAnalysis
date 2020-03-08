@@ -1,0 +1,18 @@
+import spacy 
+import pandas as pd
+from spacy.matcher import PhraseMatcher
+nlp = spacy.blank('en')
+data = pd.read_json('/restaurant.json')
+menu = ["Cheese Steak", "Cheesesteak", "Steak and Cheese", "Italian Combo", "Tiramisu", "Cannoli",
+        "Chicken Salad", "Chicken Spinach Salad", "Meatball", "Pizza", "Pizzas", "Spaghetti",
+        "Bruchetta", "Eggplant", "Italian Beef", "Purista", "Pasta", "Calzones",  "Calzone",
+        "Italian Sausage", "Chicken Cutlet", "Chicken Parm", "Chicken Parmesan", "Gnocchi",
+        "Chicken Pesto", "Turkey Sandwich", "Turkey Breast", "Ziti", "Portobello", "Reuben",
+        "Mozzarella Caprese",  "Corned Beef", "Garlic Bread", "Pastrami", "Roast Beef",
+        "Tuna Salad", "Lasagna", "Artichoke Salad", "Fettuccini Alfredo", "Chicken Parmigiana",
+        "Grilled Veggie", "Grilled Veggies", "Grilled Vegetable", "Mac and Cheese", "Macaroni",  
+         "Prosciutto", "Salami"]
+terms = [nlp(item) for item in menu]
+matcher = PhraseMatcher(nlp.vocab, attr='LOWER')
+matcher.add("Menu",None, *terms)
+item_ratings =
