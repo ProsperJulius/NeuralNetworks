@@ -1,0 +1,35 @@
+import spacy 
+import pandas as pd
+import numpy as np
+from spacy.matcher import PhraseMatcher
+from collections import defaultdict
+from sklearn.model_selection import train_test_split
+from sklearn.svm import LinearSVC
+#Spacy language model for embeddings
+nlp = spacy.load('en_core_web_lg')
+#loading the training dataFrame using json
+data = pd.read_json('/restaurant.json')
+new_data=data.copy()
+new_data.drop(new_data[new_data.stars==3].index, axis=0)
+text=new_data.text.values
+sentiment=[]
+for idx, review in new_data.iterrows():
+  if review.stars >2:
+    sentiment.append(1)
+  else:
+    sentiment.append(0)
+
+training_data = list(zip(sentiment,text))
+#Converting reviews into wordembeddings vectors
+with nlp.disable_pipes():
+  doc_vectors = np.array([nlp(text).vector for text in new_data.text.values])
+
+#splitting the data set into training set and test set
+X_train,X_test,y_train,y_test = train_test_split(doc_vectors, sentiment,test_size=0.2, random_state=1)
+sentiment_model = LinearSVC(random_state=1, dual=False, max_iter=10000)
+sentiment_model.fit(X_train,y_train)
+
+#Model accuracy
+print(sentiment_model.score(X_test, y_test))
+
+
