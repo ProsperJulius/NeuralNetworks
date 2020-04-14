@@ -1,4 +1,4 @@
-##implemantation of the xor neural network
+##implemantation of the xor neural network in PyTorch
 import torch
 import torch.nn as nn
 import numpy as np
