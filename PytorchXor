@@ -1,0 +1,49 @@
+##implemantation of the xor neural network
+import torch
+import torch.nn as nn
+import numpy as np
+""" class for the Xor neural network
+"""
+class XorNet(torch.nn.Module):
+    def __init__(self,n):
+        super(XorNet,self).__init__()
+        self.linear = nn.Linear(n,2)
+        self.lineartwo=nn.Linear(2,1)
+
+    def forward(self,x):
+        h=self.linear(x)
+        h_relu=h.clamp(min=0)  
+        y_pred=slineartwo(h_relu) 
+        return y_pred 
+
+#input dimension
+n=2
+#input data for the neural network
+x = torch.Tensor([[1.0,0.0],[1.0,1.0],[0.0,0.0],[0.0,1.0]])
+
+x.requires_grad=True
+#output data for the neural network
+y =torch.Tensor([[1.0],[0.0],[0.0],[1.0]])
+y.requires_grad=True
+
+# learning rate initialization
+learning_rate=1e-4
+#objective function
+loss_function = torch.nn.MSELoss(reduction='sum')
+model =XorNet(n)  
+"""
+I chose adam but you can use SGD as well
+"""
+optimizer= torch.optim.Adam(model.parameters(),lr=learning_rate)
+for t in range(10000):
+    y_pred = model(x)
+    loss=loss_function(y_pred,y)
+    optimizer.zero_grad()
+    loss.backward()
+    optimizer.step()
+    
+    
+#using our model to do the prediction
+print(model(torch.Tensor([[1.0,0]])).item())     
+    
+
